@@ -1,19 +1,15 @@
+#include <iostream>
+#include <string>
 using namespace std;
-#include<iostream>
-#include<string>
 
-//TO-DO-LIST APP
-//4 functions
+// TO-DO-LIST APP
+// 4 functions
 
-
-
-
-struct Task
-{
-	int Number;
-	bool isCompleted;
-	string Title;
-	Task* next;
+struct Task {
+    int Number;
+    bool isCompleted;
+    string Title;
+    Task* next;
 };
 
 Task* top = NULL;
@@ -24,174 +20,150 @@ void viewTasks();
 void completeTask(int number);
 void deleteTask(int id);
 
-int main()
-{
-	cout << "====== TO - DO - LIST ======\n " << endl;
+int main() {
+    cout << "----- TO - DO - LIST -----\n" << endl;
 
-	//addTasks
-	int n;
-	cout << "Enter Nnmbers Of Tasks ? ";
-	cin >> n;
+    // Add tasks
+    int n;
+    cout << "Enter Number Of Tasks: ";
+    cin >> n;
+    cin.ignore();
 
-	for (int i = 0; i < n; i++)
-	{
-		string task;
-		cout << "Enter Task " << i + 1 << " : ";
-		cin.ignore();
-		getline(cin, task);
-		addTasks(task);
-	}
+    for (int i = 0; i < n; i++) {
+        string task;
+        cout << "Enter Task " << i + 1 << ": ";
+        getline(cin, task);
+        addTasks(task);
+    }
 
+    cout << "\nTasks added successfully!\n" << endl;
 
-	cout << "\n" << "Tasks added successfully!" << endl;
-	cout << "\n" << endl;
+    // View tasks
+    cout << "CURRENT TASKS:\n";
+    viewTasks();
+    cout << "\n";
 
-	//viewTasks
-	cout << "CURRENT TASKS : " << endl;
-	viewTasks();
+    // Complete task
+    int nums;
+    cout << "How Many Tasks You Have Completed? ";
+    cin >> nums;
 
+    for (int i = 0; i < nums; i++) {
+        int num;
+        cout << "Enter The Number Of Completed Task: ";
+        cin >> num;
+        completeTask(num);
+    }
+    cout << "\nTasks after completion:\n";
+    viewTasks();
+    cout << "\n";
 
-	cout << "\n" << endl;
+    // Delete task
+    char choice;
+    cout << "Do you want to delete any task? (y/n): ";
+    cin >> choice;
 
+    if (choice == 'y' || choice == 'Y') {
+        int delnum;
+        cout << "Enter The Number Of Task To Delete: ";
+        cin >> delnum;
+        deleteTask(delnum);
 
-	//completeTask
-	int nums;
-	cout << "How Many Tasks You Have Completed ? ";
-	cin >> nums;
+        cout << "\nTasks After Deletion:\n";
+        viewTasks();
+    }
+    else {
+        cout << "No tasks deleted. Program finished.\n";
+    }
 
-
-	for (int i = 0; i < nums; i++)
-	{
-		int num;
-		cout << "Enter The Number Of Completed Tasks ? ";
-		cin >> num;
-		completeTask(num);
-	}
-	cout << "\nTasks after completion:\n";
-	viewTasks();
-
-
-	//deleteTask
-	char choice;
-	cout << "Do you want to delete any task ?(y/n) ";
-	cin >> choice;
-
-	if (choice == 'y' || choice == 'Y')
-	{
-		int delnum;
-		cout << "Enter The Number Of Task To Delete ? ";
-		cin >> delnum;
-		deleteTask(delnum);
-
-		cout << endl << "Tasks After Deletion: \n ";
-		viewTasks();
-	}
-	else
-	{
-		cout << "No tasks deleted. Program finished.\n";
-	}
-
-	cout << "THANK YOU";
+    cout << "\nTHANK YOU\n";
+    return 0;
 }
 
+void addTasks(string title) {
+    Task* new_task = new Task;
+    new_task->Title = title;
+    new_task->isCompleted = false;
+    new_task->Number = nextNumber++;
+    new_task->next = NULL;
 
-
-
-void addTasks(string title)
-{
-	Task* new_task, * last;
-	new_task = new Task;
-	new_task->Title = title;
-	new_task->isCompleted = false;
-	new_task->Number = nextNumber++;
-
-	if (top == NULL)
-	{
-		top = new_task;
-		new_task->next = NULL;
-	}
-	else
-	{
-		last = top;
-		while (last->next != NULL)
-		{
-			last = last->next;
-		}
-		last->next = new_task;
-		new_task->next = NULL;
-	}
+    if (top == NULL) {
+        top = new_task;
+    }
+    else {
+        Task* last = top;
+        while (last->next != NULL) {
+            last = last->next;
+        }
+        last->next = new_task;
+    }
 }
 
-
-void viewTasks()
-{
-	Task* current;
-	if (top == NULL)
-	{
-		cout << "There is no tasks! ";
-	}
-	else
-	{
-		current = top;
-		while (current != NULL)
-		{
-			cout << "(" << current->Number << ")" << ": " << current->Title << "  ";
-			cout << " --> " << (current->isCompleted ? "Completed" : "Not Completed") << endl;
-			current = current->next;
-		}
-	}
+void viewTasks() {
+    if (top == NULL) {
+        cout << "There are no tasks!\n";
+    }
+    else {
+        Task* current = top;
+        while (current != NULL) {
+            cout << "(" << current->Number << ") "
+                << current->Title << " --> "
+                << (current->isCompleted ? "Completed" : "Not Completed")
+                << endl;
+            current = current->next;
+        }
+    }
 }
 
-
-void completeTask(int number)
-{
-	Task* com;
-	if (top == NULL)
-	{
-		cout << "No Tasks";
-	}
-	else
-	{
-		com = top;
-		while (com != NULL)
-		{
-			if (com->Number == number)
-			{
-				if (com->isCompleted)
-				{
-					cout << number << " Completed" << endl;
-				}
-				else
-				{
-					com->isCompleted = true;
-					cout << "Task (" << number << ") marked as completed\n";
-				}
-				return;
-			}
-			com = com->next;
-		}
-		cout << "Task with number (" << number << ") not found.\n";
-	}
+void completeTask(int number) {
+    if (top == NULL) {
+        cout << "No Tasks\n";
+    }
+    else {
+        Task* com = top;
+        while (com != NULL) {
+            if (com->Number == number) {
+                if (com->isCompleted) {
+                    cout << "Task (" << number << ") is already completed.\n";
+                }
+                else {
+                    com->isCompleted = true;
+                    cout << "Task (" << number << ") marked as completed.\n";
+                }
+                return;
+            }
+            com = com->next;
+        }
+        cout << "Task with number (" << number << ") not found.\n";
+    }
 }
 
+void deleteTask(int id) {
+    if (top == NULL) {
+        cout << "No Tasks to delete!\n";
+        return;
+    }
 
-void deleteTask(int id)
-{
-	Task* curent, * previous;
-	curent = top;
-	previous = top;
+    Task* current = top;
+    Task* previous = NULL;
 
-	if (curent->Number == id)
-	{
-		top = curent->next;
-		free(curent);
-		return;
-	}
-	while (curent->Number != id)
-	{
-		previous = curent;
-		curent = curent->next;
-	}
-	previous->next = curent->next;
-	free(curent);
+    while (current != NULL && current->Number != id) {
+        previous = current;
+        current = current->next;
+    }
+
+    if (current == NULL) {
+        cout << "Task with number (" << id << ") not found.\n";
+        return;
+    }
+
+    if (previous == NULL) { 
+        top = current->next;
+    }
+    else {
+        previous->next = current->next;
+    }
+
+    delete current; 
+    cout << "Task (" << id << ") deleted successfully.\n";
 }
